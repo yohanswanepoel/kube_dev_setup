@@ -157,4 +157,16 @@ Domains=test
 minikube podman-env
 eval $(minikube -p minikube podman-env)
 ```
+
+## Using cluster docker
+```bash
+minikube podman-env
+eval $(minikube -p minikube docker-env)
+```
+
+## getting client tools
+* kubectl
+* kubectx - switch context between kubernetes instances
+* kubens - easily manage namespaces
+
 ## Optional Add-ons
