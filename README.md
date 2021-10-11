@@ -151,6 +151,16 @@ DNS=192.168.39.2
 Domains=test
 ```
 
+**MacOS**
+Create a file in /etc/resolver/minikube-profilename-test
+```
+domain test
+nameserver 192.168.99.169
+search_order 1
+timeout 5
+```
+Replace 192.168.99.169 with your minikube ip and profilename is the name of the minikube profile for the corresponding ip address
+
 
 ## Using cluster podman
 ```bash

@@ -40,14 +40,23 @@ for addon in ADDONS:
 
 # Linux and mac does it differently
 host_os = platform.system()
+ip_addr = os.popen("minikube ip".format(PROFILE)).read().strip()
 if host_os == "Linux":
     # Get the network name
     # minikube logs | grep "domain minikube has defined MAC address" | tail -1
     # libmachine: (minikube) DBG | domain minikube has defined MAC address 52:54:00:e5:de:d8 in network virbr1
     # virsh domiflist minikube
-    ip_addr = os.popen("minikube ip".format(PROFILE)).read().strip()
     vnet = os.popen("virsh domifaddr {} | grep -i {}".format(PROFILE, ip_addr)).read().strip().split()[0]
     bridge = os.popen("virsh domiflist {} | grep -i {}".format(PROFILE, vnet)).read().strip().split()[2]
     # This command is idempotent so no harm  in running it twice
     print("....Setting up local ingress-dns resolution for *.{} to minikube ip: {} on bridge: {}".format(DOMAIN, ip_addr, bridge))
     os.system("sudo systemd-resolve --interface {} --set-dns $(minikube ip) --set-domain {}".format(bridge, DOMAIN))
+else:
+    # For MacOS
+    file_contents = """
+        domain {}
+        nameserver {}
+        search_order 1
+        timeout 5
+    """.format(DOMAIN, ip_addr)
+    os.system("sudo echo '{}' > /etc/resolver/minikube-{}-{}".format(file_contents, PROFILE, DOMAIN))
