@@ -13,15 +13,10 @@ DOMAIN="test"
 # Check of the profile exists
 check_profile = os.popen("minikube profile | grep {}".format(PROFILE)).read().strip()
 print(check_profile)
-if check_profile != PROFILE:
-    # Do Minikube Setup
-    os.system("minikube profile {}".format(PROFILE))
-    os.system("minikube config set memory {}".format(MEMORY))
-    os.system("minikube config set cpus {}".format(CPU))
-    os.system("minikube config set disk-size {}".format(DISK))
-    #os.system("minikube config set container-runtime {}".format(RUNTIME))
-else:
-    print("Existing Profile")
+os.system("minikube profile {}".format(PROFILE))
+os.system("minikube config set memory {}".format(MEMORY))
+os.system("minikube config set cpus {}".format(CPU))
+os.system("minikube config set disk-size {}".format(DISK))
 
 # Check if the profile is running
 is_started = os.popen("minikube --profile minikube status | grep apiserver").read().strip()
@@ -59,4 +54,12 @@ else:
         search_order 1
         timeout 5
     """.format(DOMAIN, ip_addr)
-    os.system("sudo echo '{}' > /etc/resolver/minikube-{}-{}".format(file_contents, PROFILE, DOMAIN))
+    os.system("sudo mkdir -p /etc/resolver")
+    os.system("sudo touch /etc/resolver/minikube-{}-{}".format(PROFILE, DOMAIN))
+    os.system("echo '{}' | sudo tee /etc/resolver/minikube-{}-{}".format(file_contents, PROFILE, DOMAIN))
+    os.system("sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist")
+    os.system("sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist")
+    # May need to run this
+    # sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+    # sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
+

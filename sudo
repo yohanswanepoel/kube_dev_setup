@@ -1,0 +1,6 @@
+
+        domain test
+        nameserver 192.168.64.3
+        search_order 1
+        timeout 5
+     tee /etc/resolver/minikube-minikube-test
