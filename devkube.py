@@ -23,7 +23,7 @@ is_started = os.popen("minikube --profile minikube status | grep apiserver").rea
 if "Running" in is_started:
     print("Minikube started already - moving on to enabling addons")
 else:
-    os.system("minikube start")
+    os.system("minikube start --container-runtime=cri-o")
     
 ADDONS=["metrics-server","dashboard","registry","ingress","ingress-dns"]
 
@@ -47,18 +47,18 @@ if host_os == "Linux":
     print("....Setting up local ingress-dns resolution for *.{} to minikube ip: {} on bridge: {}".format(DOMAIN, ip_addr, bridge))
     os.system("sudo systemd-resolve --interface {} --set-dns $(minikube ip) --set-domain {}".format(bridge, DOMAIN))
 else:
-    pass:
+    pass
     #Skipped for now as MacOS instructions do not work
     # For MacOS
-    file_contents = """
-        domain {}
-        nameserver {}
-        search_order 1
-        timeout 5
-    """.format(DOMAIN, ip_addr)
-     os.system("sudo mkdir -p /etc/resolver")
-     os.system("sudo touch /etc/resolver/minikube-{}-{}".format(PROFILE, DOMAIN))
-     os.system("echo '{}' | sudo tee /etc/resolver/minikube-{}-{}".format(file_contents, PROFILE, DOMAIN))
+    #file_contents = """
+    #    domain {}
+    #    nameserver {}
+    #    search_order 1
+    #    timeout 5
+    #""".format(DOMAIN, ip_addr)
+    # os.system("sudo mkdir -p /etc/resolver")
+    # os.system("sudo touch /etc/resolver/minikube-{}-{}".format(PROFILE, DOMAIN))
+    # os.system("echo '{}' | sudo tee /etc/resolver/minikube-{}-{}".format(file_contents, PROFILE, DOMAIN))
     # os.system("sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist")
     # May need to run this
     # sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
