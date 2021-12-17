@@ -3,7 +3,7 @@ import sys
 import platform
 
 CPU="4"
-MEMORY="20g"
+MEMORY="24g"
 DISK="50g"
 #RUNTIME="cri-o"
 RUNTIME="docker"
