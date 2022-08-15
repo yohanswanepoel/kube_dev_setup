@@ -5,8 +5,8 @@ import platform
 CPU="4"
 MEMORY="24g"
 DISK="50g"
-#RUNTIME="cri-o"
-RUNTIME="docker"
+RUNTIME="cri-o"
+#RUNTIME="docker"
 PROFILE="minikube"
 DOMAIN="test"
 
